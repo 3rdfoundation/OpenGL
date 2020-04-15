@@ -1,4 +1,4 @@
-GAME ENGINE series (youtube - The Cherno)
+OpenGL series (youtube - The Cherno)
 
 ----
 
@@ -6,7 +6,7 @@ Details
   * Instructor: Yan Chernikov (TheCherno)
   * Location..: Melbourne, Australia
   * Youtube...: youtube.com/TheChernoProject
-  * GitHub....: https://github.com/TheCherno
+  * GitHub....: N/A
   * Patreon...: https://www.patreon.com/thecherno
   * Biography.: Game Engine Developer for EA on the Frostbite Engine.
 
