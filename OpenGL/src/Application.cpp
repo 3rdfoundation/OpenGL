@@ -50,6 +50,10 @@ int main() {
 	// Select the buffer by ID
 	glBindBuffer(GL_ARRAY_BUFFER, bufferID);
 
+	// We have 3 vertexes, each only a position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
 	// Fill the buffer with data
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
 
