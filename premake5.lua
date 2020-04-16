@@ -1,5 +1,5 @@
 workspace "OpenGL"
-	architecture "x64"
+	architecture "x86"
 
 	configurations {
 		"Debug",
@@ -7,10 +7,6 @@ workspace "OpenGL"
 		"Dist"
 	}
 
--- this uses tokens (see premake wiki for a list of them)
---  cfg.buildcfg (Debug/Release/Dist)
---  cfg.system (Windows/Mac/Linux)
---  cfg.architecture (x64)
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 project "OpenGL"
@@ -30,12 +26,26 @@ project "OpenGL"
 	}
 
 	includedirs {
-	    "%{prj.name}/src"
+	    "%{prj.name}/src",
+	    "%{prj.name}/dependencies/GLFW/include"
 	}
+
+    libdirs {
+	    "%{prj.name}/dependencies/GLFW/lib-vc2017"
+    }
+
+    links {
+        "glfw3.lib",
+        "opengl32.lib",
+        "user32.lib", 
+        "gdi32.lib", 
+        "shell32.lib", 
+        "vcruntime.lib", 
+        "msvcrt.lib"
+    }
 
 	-- FYI: Windows SDK version from properties = 10.0.15063.0
 	filter "system:windows"
-		-- cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
 
