@@ -1,5 +1,5 @@
 workspace "OpenGL"
-	architecture "x86"
+	architecture "x64"
 
 	configurations {
 		"Debug",
@@ -27,11 +27,13 @@ project "OpenGL"
 
 	includedirs {
 	    "%{prj.name}/src",
-	    "%{prj.name}/dependencies/GLFW/include"
+	    "%{prj.name}/dependencies/GLFW/include",
+	    "%{prj.name}/dependencies/GLEW/include"
 	}
 
     libdirs {
-	    "%{prj.name}/dependencies/GLFW/lib-vc2017"
+	    "%{prj.name}/dependencies/GLFW/lib-vc2017",
+	    "%{prj.name}/dependencies/GLEW/lib/Release/x64"
     }
 
     links {
@@ -41,7 +43,8 @@ project "OpenGL"
         "gdi32.lib", 
         "shell32.lib", 
         "vcruntime.lib", 
-        "msvcrt.lib"
+        "msvcrt.lib",
+        "glew32s.lib"
     }
 
 	-- FYI: Windows SDK version from properties = 10.0.15063.0
@@ -51,9 +54,7 @@ project "OpenGL"
 
 		-- ommitted: HZ_BUILD_DLL
 		defines {
-			"_SCL_SECURE_NO_WARNINGS",
-			"HZ_PLATFORM_WINDOWS",
-			"HZ_BUILD_DLL"
+			"GLEW_STATIC"
 		}
 
 	filter "configurations:Debug"
