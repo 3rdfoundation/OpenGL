@@ -1,14 +1,22 @@
 #include "opengl.h"
 
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCALL(x) GLClearError();\
+	x;\
+	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
 static void GLClearError() {
 	// while body is irrelevant... we just want to call until we get GL_NO_ERROR
 	while (glGetError() != GL_NO_ERROR);
 }
 
-static void GLCheckError() {
+static bool GLLogCall(const char* function, const char* file, int line) {
 	while (GLenum error = glGetError()) {
-		std::cout << "GL Error: " << error << std::endl;
+		std::cout << "GL Error: " << error << 
+			" : " << function << " : " << file << " : " << line << std::endl;
+		return false;
 	}
+	return true;
 }
 
 struct ShaderProgramSource {
@@ -141,18 +149,18 @@ int main() {
 
 	// Vertex Buffer
 	unsigned int buffer;
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+	GLCALL(glGenBuffers(1, &buffer));
+	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+	GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+	GLCALL(glEnableVertexAttribArray(0));
+	GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
 	// Index Buffer Object
 	unsigned int ibo;
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+	GLCALL(glGenBuffers(1, &ibo));
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
 	// Create shader source code
 	
@@ -164,29 +172,26 @@ int main() {
 
 	// compile the shader
 	unsigned int shader = CreateShader(shaders.VertexSource, shaders.FragmentSource);
-	glUseProgram(shader);
+	GLCALL(glUseProgram(shader));
 
 	// Loop until the user closes the window
 	while (!glfwWindowShouldClose(window)) {
 		
 		// Render here
-		glClear(GL_COLOR_BUFFER_BIT);
+		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 
 		// Use index buffer (drawing 6 indices)
-		GLClearError();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-		GLCheckError();
+		GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 		// Swap front and back buffers
-		glfwSwapBuffers(window);
+		GLCALL(glfwSwapBuffers(window));
 
 		// Poll for and process events
-		glfwPollEvents();
+		GLCALL(glfwPollEvents());
 	}
 
-	glDeleteProgram(shader);
-
-	glfwTerminate();
+	GLCALL(glDeleteProgram(shader));
+	GLCALL(glfwTerminate());
 	return 0;
 
 }
