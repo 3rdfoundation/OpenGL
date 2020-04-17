@@ -15,7 +15,6 @@ static ShaderProgramSource LoadShaders(const std::string filePath) {
 	std::string line;
 	ShaderType type = ShaderType::NONE;
 	while (getline(stream, line)) {
-		std::cout << "LINE: " << line << std::endl;
 		// Skip comments
 		if (line.find("# ----") == 0) {
 			continue;
@@ -117,10 +116,13 @@ int main() {
 	// Create a modern OpenGL buffer
 	// ---------------------------------------------------------------------------
 
-	float positions[6] = {
+	float positions[] = {
 		-0.5f, -0.5f,
-		 0.0f,  0.5f,
-		 0.5f, -0.5f
+		 0.5f, -0.5f,
+		 0.5f,  0.5f,
+		-0.5f, -0.5f,
+		 0.5f,  0.5f,
+		-0.5f,  0.5f
 	};
 
 	// this creates a buffer and gives us back the id of the buffer
@@ -135,7 +137,7 @@ int main() {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
 	// Fill the buffer with data
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
 	// Create shader source code
 	
@@ -156,7 +158,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Use buffer
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
