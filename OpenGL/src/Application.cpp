@@ -117,27 +117,30 @@ int main() {
 	// ---------------------------------------------------------------------------
 
 	float positions[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f
+		-0.5f, -0.5f, // 0
+		 0.5f, -0.5f, // 1
+		 0.5f,  0.5f, // 2
+		-0.5f,  0.5f  // 3
 	};
 
-	// this creates a buffer and gives us back the id of the buffer
-	unsigned int bufferID;
-	glGenBuffers(1, &bufferID);
+	unsigned int indices[]{
+		0, 1, 2, // TRIANGLE 1
+		2, 3, 0  // TRIANGLE 2
+	};
 
-	// Select the buffer by ID
-	glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+	// VERTEX BUFFER
+	unsigned int buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
-	// We have 3 vertexes, each only a position
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
-	// Fill the buffer with data
-	glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+	unsigned int ibo; // Index Buffer Object
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 	// Create shader source code
 	
@@ -157,8 +160,8 @@ int main() {
 		// Render here
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Use buffer
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Use index buffer (drawing 6 indices)
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
