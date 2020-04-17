@@ -1,5 +1,16 @@
 #include "opengl.h"
 
+static void GLClearError() {
+	// while body is irrelevant... we just want to call until we get GL_NO_ERROR
+	while (glGetError() != GL_NO_ERROR);
+}
+
+static void GLCheckError() {
+	while (GLenum error = glGetError()) {
+		std::cout << "GL Error: " << error << std::endl;
+	}
+}
+
 struct ShaderProgramSource {
 	std::string VertexSource;
 	std::string FragmentSource;
@@ -128,7 +139,7 @@ int main() {
 		2, 3, 0  // TRIANGLE 2
 	};
 
-	// VERTEX BUFFER
+	// Vertex Buffer
 	unsigned int buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -137,7 +148,8 @@ int main() {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
-	unsigned int ibo; // Index Buffer Object
+	// Index Buffer Object
+	unsigned int ibo;
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
@@ -161,7 +173,9 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Use index buffer (drawing 6 indices)
+		GLClearError();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		GLCheckError();
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
