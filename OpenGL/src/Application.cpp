@@ -1,5 +1,42 @@
 #include "opengl.h"
 
+struct ShaderProgramSource {
+	std::string VertexSource;
+	std::string FragmentSource;
+};
+
+// Load the shaders out of a file
+static ShaderProgramSource LoadShaders(const std::string filePath) {
+	std::stringstream shaders[2];
+
+	enum class ShaderType {NONE=-1, VERTEX=0, FRAGMENT=1};
+
+	std::ifstream stream(filePath);
+	std::string line;
+	ShaderType type = ShaderType::NONE;
+	while (getline(stream, line)) {
+		std::cout << "LINE: " << line << std::endl;
+		// Skip comments
+		if (line.find("# ----") == 0) {
+			continue;
+		}
+		// New shader found
+		else if (line.find("# SHADER ") == 0) {
+			if (line.find(" VERTEX") != std::string::npos) {
+				type = ShaderType::VERTEX;
+			}
+			else if (line.find(" FRAGMENT") != std::string::npos) {
+				type = ShaderType::FRAGMENT;
+			}
+		}
+		else {
+			shaders[(int)type] << line << "\n";
+		}
+	}
+
+	return { shaders[0].str(), shaders[1].str() };
+}
+
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
 	unsigned int id = glCreateShader(type);
 	const char* src = source.c_str();
@@ -104,27 +141,12 @@ int main() {
 	
 	// layout(location = 0) : 0 is from the glVertexAttribPointer
 	// vec4 being used for a 2 entry attribute. GL will auto convert it into a 4 entry vector.
-	std::string vertexShader =
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) in vec4 position;\n"
-		"\n"
-		"void main() {\n"
-		"  gl_Position = position;\n"
-		"}\n";
 
-	// color = vec4(R,G,B,Alpha) : values are 0 thru 1
-	std::string fragmentShader =
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) out vec4 color;\n"
-		"\n"
-		"void main() {\n"
-		"  color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-		"}\n";
+	// Path is relative to project directory
+	ShaderProgramSource shaders = LoadShaders("resources/shaders/basic.shader");
 
 	// compile the shader
-	unsigned int shader = CreateShader(vertexShader, fragmentShader);
+	unsigned int shader = CreateShader(shaders.VertexSource, shaders.FragmentSource);
 	glUseProgram(shader);
 
 	// Loop until the user closes the window
