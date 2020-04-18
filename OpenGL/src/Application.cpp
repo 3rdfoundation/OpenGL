@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
+#include "VertexArray.h"
 
 // ----------------------------------------------------------------------------
 // SHADER FILE RELATED
@@ -172,13 +173,13 @@ int main() {
 	GLCALL(glGenVertexArrays(1, &vao));
 	GLCALL(glBindVertexArray(vao));
 
-	// Vertex Buffer
+	// Vertex Array
+	VertexArray va;
 	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
-	// Vertex Buffer Attributes
-	GLCALL(glEnableVertexAttribArray(0));
-	// > this "secretly" links the vertex buffer to the vertex array object
-	GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+	VertexBufferLayout layout;
+	layout.Push<float>(2);
+	va.AddBuffer(vb, layout);
 
 	// Index Buffer Object
 	IndexBuffer ib(indices, 2 * 3);
@@ -227,14 +228,7 @@ int main() {
 		GLCALL(glUseProgram(shader));
 		GLCALL(glUniform4f(location, red, 0.5f, 1.0f, 1.0f));
 
-		// OLD CODE: binds buffer and layout
-		//GLCALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-		//GLCALL(glEnableVertexAttribArray(0));
-		//GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
-
-		// NEW CODE: binds vertex array object
-		GLCALL(glBindVertexArray(vao));
-
+		va.Bind();
 		ib.Bind();
 
 		// ----------------------------------------------------------------------------
