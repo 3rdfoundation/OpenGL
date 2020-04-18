@@ -1,5 +1,9 @@
 #include "opengl.h"
 
+// ----------------------------------------------------------------------------
+// ERROR LOGGING RELATED
+// ----------------------------------------------------------------------------
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #define GLCALL(x) GLClearError();\
 	x;\
@@ -18,6 +22,10 @@ static bool GLLogCall(const char* function, const char* file, int line) {
 	}
 	return true;
 }
+
+// ----------------------------------------------------------------------------
+// SHADER FILE RELATED
+// ----------------------------------------------------------------------------
 
 struct ShaderProgramSource {
 	std::string VertexSource;
@@ -54,6 +62,10 @@ static ShaderProgramSource LoadShaders(const std::string filePath) {
 
 	return { shaders[0].str(), shaders[1].str() };
 }
+
+// ----------------------------------------------------------------------------
+// SHADER COMPILATION RELATED
+// ----------------------------------------------------------------------------
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
 	unsigned int id = glCreateShader(type);
@@ -98,7 +110,15 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 
 }
 
+// ----------------------------------------------------------------------------
+// CUSTOM CODE
+// ----------------------------------------------------------------------------
+
 int main() {
+
+	// ----------------------------------------------------------------------------
+	// Set up the windows to draw onto
+	// ----------------------------------------------------------------------------
 
 	//std::cout << "hello world" << std::endl;
 	//std::cin.get();
@@ -109,6 +129,11 @@ int main() {
 	if (!glfwInit()) {
 		return -1;
 	}
+
+	// Force profile to "Core Profile" on OpenGL v3.3
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a windowed mode window and its OpenGL context
 	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
@@ -123,6 +148,10 @@ int main() {
 	// Control the framerate
 	// > sync with monitor framerate
 	glfwSwapInterval(1);
+
+	// ----------------------------------------------------------------------------
+	// INITIALIZE GLEW
+	// ----------------------------------------------------------------------------
 
 	// Glew init must occur after having a valid window context
 	if (glewInit() != GLEW_OK) {
@@ -146,10 +175,19 @@ int main() {
 		-0.5f,  0.5f  // 3
 	};
 
+	// ----------------------------------------------------------------------------
+	// Create an index buffer
+	// ----------------------------------------------------------------------------
+
 	unsigned int indices[]{
 		0, 1, 2, // TRIANGLE 1
 		2, 3, 0  // TRIANGLE 2
 	};
+
+	// Create the vertex array object
+	unsigned int vao;
+	GLCALL(glGenVertexArrays(1, &vao));
+	GLCALL(glBindVertexArray(vao));
 
 	// Vertex Buffer
 	unsigned int buffer;
@@ -157,7 +195,9 @@ int main() {
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
+	// Vertex Buffer Attributes
 	GLCALL(glEnableVertexAttribArray(0));
+	// > this "secretly" links the vertex buffer to the vertex array object
 	GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
 	// Index Buffer Object
@@ -166,23 +206,31 @@ int main() {
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
-	// Create shader source code
-	
-	// layout(location = 0) : 0 is from the glVertexAttribPointer
-	// vec4 being used for a 2 entry attribute. GL will auto convert it into a 4 entry vector.
-
 	// Path is relative to project directory
 	ShaderProgramSource shaders = LoadShaders("resources/shaders/basic.shader");
 
 	// compile the shader
 	unsigned int shader = CreateShader(shaders.VertexSource, shaders.FragmentSource);
+
+	// Use the shader
 	GLCALL(glUseProgram(shader));
 
-	// Set u_Color
+	// Get u_Color memory location
 	GLCALL(int location = glGetUniformLocation(shader, "u_Color"));
 	ASSERT(location != -1);
 
+	// ----------------------------------------------------------------------------
+	// UNBIND EXAMPLE (using 0 buffer ubinds our buffer)
+	// ----------------------------------------------------------------------------
+
+	GLCALL(glBindVertexArray(0));
+	GLCALL(glUseProgram(0));
+	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
+	// ----------------------------------------------------------------------------
 	// Loop until the user closes the window
+	// ----------------------------------------------------------------------------
 	float red = 0.0f;
 	while (!glfwWindowShouldClose(window)) {
 		
@@ -194,7 +242,27 @@ int main() {
 		if (red > 1) {
 			red = 0;
 		}
+
+		// ----------------------------------------------------------------------------
+		// BIND SO THAT DRAW WORKS
+		// ----------------------------------------------------------------------------
+
+		GLCALL(glUseProgram(shader));
 		GLCALL(glUniform4f(location, red, 0.5f, 1.0f, 1.0f));
+
+		// OLD CODE: binds buffer and layout
+		//GLCALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+		//GLCALL(glEnableVertexAttribArray(0));
+		//GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+
+		// NEW CODE: binds vertex array object
+		GLCALL(glBindVertexArray(vao));
+
+		GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+
+		// ----------------------------------------------------------------------------
+		// DRAW & DISPLAY
+		// ----------------------------------------------------------------------------
 		GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 		// Swap front and back buffers
