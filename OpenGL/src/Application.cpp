@@ -1,27 +1,7 @@
 #include "opengl.h"
-
-// ----------------------------------------------------------------------------
-// ERROR LOGGING RELATED
-// ----------------------------------------------------------------------------
-
-#define ASSERT(x) if (!(x)) __debugbreak();
-#define GLCALL(x) GLClearError();\
-	x;\
-	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-static void GLClearError() {
-	// while body is irrelevant... we just want to call until we get GL_NO_ERROR
-	while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line) {
-	while (GLenum error = glGetError()) {
-		std::cout << "GL Error: " << error << 
-			" : " << function << " : " << file << " : " << line << std::endl;
-		return false;
-	}
-	return true;
-}
+#include "Renderer.h"
+#include "IndexBuffer.h"
+#include "VertexBuffer.h"
 
 // ----------------------------------------------------------------------------
 // SHADER FILE RELATED
@@ -164,6 +144,9 @@ int main() {
 	// 4.6.0 = OpenGL version
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
+	// SCOPE TO ENSURE TERMINATE DOES NOT HANG
+	{
+
 	// ---------------------------------------------------------------------------
 	// Create a modern OpenGL buffer
 	// ---------------------------------------------------------------------------
@@ -190,10 +173,7 @@ int main() {
 	GLCALL(glBindVertexArray(vao));
 
 	// Vertex Buffer
-	unsigned int buffer;
-	GLCALL(glGenBuffers(1, &buffer));
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
+	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
 	// Vertex Buffer Attributes
 	GLCALL(glEnableVertexAttribArray(0));
@@ -201,10 +181,7 @@ int main() {
 	GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
 	// Index Buffer Object
-	unsigned int ibo;
-	GLCALL(glGenBuffers(1, &ibo));
-	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+	IndexBuffer ib(indices, 2 * 3);
 
 	// Path is relative to project directory
 	ShaderProgramSource shaders = LoadShaders("resources/shaders/basic.shader");
@@ -258,7 +235,7 @@ int main() {
 		// NEW CODE: binds vertex array object
 		GLCALL(glBindVertexArray(vao));
 
-		GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+		ib.Bind();
 
 		// ----------------------------------------------------------------------------
 		// DRAW & DISPLAY
@@ -273,6 +250,11 @@ int main() {
 	}
 
 	GLCALL(glDeleteProgram(shader));
+
+	// END SCOPE TO ENSURE TERMINATE DOES NOT HANG
+	// > covered at end of "Abstracting OpenGL into Classes"
+	}
+
 	glfwTerminate();
 	return 0;
 
