@@ -1,6 +1,6 @@
 #pragma once
 #include "opengl.h"
-#include "Renderer.h"
+#include "OpenGLUtils.h"
 
 struct VertexBufferElement {
 	unsigned int type;

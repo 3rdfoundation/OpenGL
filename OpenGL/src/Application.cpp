@@ -4,6 +4,7 @@
 #include "VertexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "VertexBufferLayout.h"
 
 int main() {
 
@@ -78,6 +79,10 @@ int main() {
 		2, 3, 0  // TRIANGLE 2
 	};
 
+	// ----------------------------------------------------------------------------
+	// Setup everything for OpenGL
+	// ----------------------------------------------------------------------------
+
 	// Vertex Array
 	VertexArray va;
 
@@ -95,14 +100,13 @@ int main() {
 	// Load the shaders
 	Shader shader("resources/shaders/basic.shader");
 
+	Renderer renderer;
+
 	// ----------------------------------------------------------------------------
 	// Loop until the user closes the window
 	// ----------------------------------------------------------------------------
 	float red = 0.0f;
 	while (!glfwWindowShouldClose(window)) {
-		
-		// Render here
-		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 
 		// Use index buffer (drawing 6 indices)
 		red += .05f;
@@ -110,19 +114,12 @@ int main() {
 			red = 0;
 		}
 
-		// ----------------------------------------------------------------------------
-		// BIND SO THAT DRAW WORKS
-		// ----------------------------------------------------------------------------
+		renderer.Clear();
 
 		shader.Bind();
 		shader.SetUniform4f("u_Color", red, 0.5f, 1.0f, 1.0f);
-		va.Bind();
-		ib.Bind();
 
-		// ----------------------------------------------------------------------------
-		// DRAW & DISPLAY
-		// ----------------------------------------------------------------------------
-		GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+		renderer.Draw(va, ib, shader);
 
 		// Swap front and back buffers
 		GLCALL(glfwSwapBuffers(window));

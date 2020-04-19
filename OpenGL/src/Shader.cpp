@@ -1,6 +1,6 @@
 #include "opengl.h"
 #include "Shader.h"
-#include "Renderer.h"
+#include "OpenGLUtils.h"
 
 Shader::Shader(const std::string& filepath)
 	: m_FilePath(filepath), m_RendererID(0) {
