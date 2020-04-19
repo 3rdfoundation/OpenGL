@@ -175,8 +175,11 @@ int main() {
 
 	// Vertex Array
 	VertexArray va;
+
+	// Vertex Buffer
 	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
+	// Vertex Buffer Layout #1 (2 dimensional position)
 	VertexBufferLayout layout;
 	layout.Push<float>(2);
 	va.AddBuffer(vb, layout);
