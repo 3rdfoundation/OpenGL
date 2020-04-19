@@ -1,6 +1,5 @@
 #include "opengl.h"
 #include "Renderer.h"
-#include "OpenGLUtils.h"
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const {
 	shader.Bind();

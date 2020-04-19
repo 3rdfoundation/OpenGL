@@ -1,9 +1,11 @@
 #include "opengl.h"
-#include "Renderer.h"
+
 #include "IndexBuffer.h"
-#include "VertexBuffer.h"
-#include "VertexArray.h"
+#include "Renderer.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
 int main() {
@@ -64,10 +66,10 @@ int main() {
 	// ---------------------------------------------------------------------------
 
 	float positions[] = {
-		-0.5f, -0.5f, // 0
-		 0.5f, -0.5f, // 1
-		 0.5f,  0.5f, // 2
-		-0.5f,  0.5f  // 3
+		-0.5f, -0.5f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
+		 0.5f, -0.5f, 1.0f, 0.0f, // 1
+		 0.5f,  0.5f, 1.0f, 1.0f, // 2
+		-0.5f,  0.5f, 0.0f, 1.0f  // 3
 	};
 
 	// ----------------------------------------------------------------------------
@@ -79,6 +81,10 @@ int main() {
 		2, 3, 0  // TRIANGLE 2
 	};
 
+	// Set up blending for an alpha channel
+	GLCALL(glEnable(GL_BLEND));
+	GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
+
 	// ----------------------------------------------------------------------------
 	// Setup everything for OpenGL
 	// ----------------------------------------------------------------------------
@@ -87,10 +93,11 @@ int main() {
 	VertexArray va;
 
 	// Vertex Buffer
-	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+	VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
 	// Vertex Buffer Layout #1 (2 dimensional position)
 	VertexBufferLayout layout;
+	layout.Push<float>(2);
 	layout.Push<float>(2);
 	va.AddBuffer(vb, layout);
 
@@ -99,26 +106,20 @@ int main() {
 
 	// Load the shaders
 	Shader shader("resources/shaders/basic.shader");
+	shader.Bind();
+
+	Texture texture("resources/textures/half_life_alyx.png");
+	texture.Bind(0); // 0 = texture slot
+	shader.SetUniform1i("u_Texture", 0); // make texture slot (0) available to shader code
 
 	Renderer renderer;
 
 	// ----------------------------------------------------------------------------
 	// Loop until the user closes the window
 	// ----------------------------------------------------------------------------
-	float red = 0.0f;
 	while (!glfwWindowShouldClose(window)) {
 
-		// Use index buffer (drawing 6 indices)
-		red += .05f;
-		if (red > 1) {
-			red = 0;
-		}
-
 		renderer.Clear();
-
-		shader.Bind();
-		shader.SetUniform4f("u_Color", red, 0.5f, 1.0f, 1.0f);
-
 		renderer.Draw(va, ib, shader);
 
 		// Swap front and back buffers

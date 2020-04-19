@@ -1,6 +1,5 @@
 #include "opengl.h"
 #include "Shader.h"
-#include "OpenGLUtils.h"
 
 Shader::Shader(const std::string& filepath)
 	: m_FilePath(filepath), m_RendererID(0) {
@@ -20,6 +19,15 @@ void Shader::Bind() const {
 
 void Shader::Unbind() const {
 	GLCALL(glUseProgram(0));
+}
+
+// ----------------------------------------------------------------------------
+// UNIFORMS 
+// ----------------------------------------------------------------------------
+
+void Shader::SetUniform1i(const std::string& name, int value) {
+	int location = GetUniformLocation(name);
+	GLCALL(glUniform1i(location, value));
 }
 
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
