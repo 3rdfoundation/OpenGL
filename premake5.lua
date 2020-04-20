@@ -28,7 +28,8 @@ project "OpenGL"
 	includedirs {
 	    "%{prj.name}/src",
 	    "%{prj.name}/dependencies/GLFW/include",
-	    "%{prj.name}/dependencies/GLEW/include"
+	    "%{prj.name}/dependencies/GLEW/include",
+	    "%{prj.name}/src/vendor"
 	}
 
     libdirs {

@@ -26,13 +26,19 @@ void Shader::Unbind() const {
 // ----------------------------------------------------------------------------
 
 void Shader::SetUniform1i(const std::string& name, int value) {
-	int location = GetUniformLocation(name);
-	GLCALL(glUniform1i(location, value));
+	GLCALL(glUniform1i(GetUniformLocation(name), value));
 }
 
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
-	int location = GetUniformLocation(name);
-	GLCALL(glUniform4f(location, v0, v1, v2, v3));
+	GLCALL(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
+}
+
+void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) {
+	// GL_FALSE = data does not need transfrom from rows to cols (because glm is in col layout)
+	// &matrix[0][0] returns the memory address of the first entry
+	unsigned int location = GetUniformLocation(name);
+	std::cout << "LOCATION: " << location << std::endl;
+	GLCALL(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0] ));
 }
 
 // ============================================================================
@@ -45,7 +51,7 @@ int Shader::GetUniformLocation(const std::string& name) {
 		location = m_UniformLocationCache[name];
 	}
 	else {
-		GLCALL(location = glGetUniformLocation(m_RendererID, "u_Color"));
+		GLCALL(location = glGetUniformLocation(m_RendererID, name.c_str()));
 		if (location == -1) {
 			std::cout << "WARNING: missing uniform location: " << name << std::endl;
 		}
@@ -120,8 +126,8 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 	glValidateProgram(program);
 
 	// delete the intermediate shaders (think of them like C++ intermediate files)
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+	//glDeleteShader(vs);
+	//glDeleteShader(fs);
 
 	return program;
 

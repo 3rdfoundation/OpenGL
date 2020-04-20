@@ -104,12 +104,20 @@ int main() {
 	// Index Buffer Object
 	IndexBuffer ib(indices, 2 * 3);
 
+	// Create a 4:3 orthographic projection matrix
+	// > this represents the ratio of our window size (640 x 480)
+	// > 1/.75 = 4:3 ratio
+	// > things further away do not get smaller (like ortho in blender)
+	// > This is the actual size of our window in vertex terms
+	glm::mat4 projection = glm::ortho(-1.f, 1.f, -.75f, .75f, -1.0f, 1.0f);
+
 	// Load the shaders
 	Shader shader("resources/shaders/basic.shader");
 	shader.Bind();
+	shader.SetUniformMat4f("u_MVP", projection);
 
 	Texture texture("resources/textures/half_life_alyx.png");
-	texture.Bind(0); // 0 = texture slot
+	texture.Bind(); // 0 = texture slot
 	shader.SetUniform1i("u_Texture", 0); // make texture slot (0) available to shader code
 
 	Renderer renderer;
