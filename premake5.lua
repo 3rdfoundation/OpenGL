@@ -29,7 +29,8 @@ project "OpenGL"
 	    "%{prj.name}/src",
 	    "%{prj.name}/dependencies/GLFW/include",
 	    "%{prj.name}/dependencies/GLEW/include",
-	    "%{prj.name}/src/vendor"
+	    "%{prj.name}/src/vendor",
+	    "%{prj.name}/src/vendor/imgui"
 	}
 
     libdirs {
@@ -53,7 +54,6 @@ project "OpenGL"
 		staticruntime "On"
 		systemversion "latest"
 
-		-- ommitted: HZ_BUILD_DLL
 		defines {
 			"GLEW_STATIC"
 		}

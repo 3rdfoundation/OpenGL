@@ -7,6 +7,7 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "imgui_impl_glfw_gl3.h"
 
 int main() {
 
@@ -30,7 +31,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a windowed mode window and its OpenGL context
-	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+	window = glfwCreateWindow(1024, 768, "Hello World", NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		return -1;
@@ -65,11 +66,20 @@ int main() {
 	// Create a modern OpenGL buffer
 	// ---------------------------------------------------------------------------
 
+	/*
 	float positions[] = {
-		-4.0f, -4.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
-		 4.0f, -4.0f, 1.0f, 0.0f, // 1
-		 4.0f,  4.0f, 1.0f, 1.0f, // 2
-		-4.0f,  4.0f, 0.0f, 1.0f  // 3
+		-600.0f, -600.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
+		 600.0f, -600.0f, 1.0f, 0.0f, // 1
+		 600.0f,  600.0f, 1.0f, 1.0f, // 2
+		-600.0f,  600.0f, 0.0f, 1.0f  // 3
+	};
+	*/
+
+	float positions[] = {
+		100.0f, 100.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
+		700.0f, 100.0f, 1.0f, 0.0f, // 1
+		700.0f, 700.0f, 1.0f, 1.0f, // 2
+		100.0f, 700.0f, 0.0f, 1.0f  // 3
 	};
 
 	// ----------------------------------------------------------------------------
@@ -105,26 +115,17 @@ int main() {
 	IndexBuffer ib(indices, 2 * 3);
 
 	// Create a 4:3 orthographic projection matrix
-	// > this represents the ratio of our window size (640 x 480)
-	// > 6/4.5 = 4:3 ratio
+	// > this represents the ratio of our window size (1024 x 760)
+	// > to keep things simple we are using the same units as window pixels
 	// > things further away do not get smaller (like ortho in blender)
-	// > This is the actual size of our window in vertex terms
-	glm::mat4 projection = glm::ortho(-6.f, 6.f, -4.5f, 4.5f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(0.f, 1024.f, 0.f, 768.f, -1.0f, 1.0f);
 
 	// NOTE: glm::mat4(1.0f) = identity matrix (matrix equivalent of 1)
-	// > this creates an X offset of -1.f (moves to left ... simulates camera moving to the right)
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.f, 0, 0));
-	
-	// > this creates a Y offset of .25f (move up)
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, .25f, 0));
-
-	// Create the MVP matrix (CPU side calc since it is not in the shader)
-	glm::mat4 mvp = projection * view * model;
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-50.f, -50.f, 0));
 
 	// Load the shaders
 	Shader shader("resources/shaders/basic.shader");
 	shader.Bind();
-	shader.SetUniformMat4f("u_MVP", mvp);
 
 	Texture texture("resources/textures/half_life_alyx.png");
 	texture.Bind(); // 0 = texture slot
@@ -132,13 +133,44 @@ int main() {
 
 	Renderer renderer;
 
+	// ImGUI setup
+	ImGui::CreateContext();
+	ImGui_ImplGlfwGL3_Init(window, true);
+	ImGui::StyleColorsDark();
+	bool show_demo_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	
+	glm::vec3 translation(25.f, 25.f, 0);
+
 	// ----------------------------------------------------------------------------
 	// Loop until the user closes the window
 	// ----------------------------------------------------------------------------
 	while (!glfwWindowShouldClose(window)) {
 
 		renderer.Clear();
+
+		// ImGUI frame
+		ImGui_ImplGlfwGL3_NewFrame();
+
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+		glm::mat4 mvp = projection * view * model;
+
+		shader.Bind();
+		shader.SetUniformMat4f("u_MVP", mvp);
+
 		renderer.Draw(va, ib, shader);
+
+		// ImGUI example
+		{
+			// passing in memory address of first entry of translation (&translation .x)
+			ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 1024.0f);   
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		}
+
+		// ImGUI render
+		ImGui::Render();
+		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// Swap front and back buffers
 		GLCALL(glfwSwapBuffers(window));
@@ -150,6 +182,10 @@ int main() {
 	// END SCOPE TO ENSURE TERMINATE DOES NOT HANG
 	// > covered at end of "Abstracting OpenGL into Classes"
 	}
+
+	// ImGUI clean up
+	ImGui_ImplGlfwGL3_Shutdown();
+	ImGui::DestroyContext();
 
 	glfwTerminate();
 	return 0;

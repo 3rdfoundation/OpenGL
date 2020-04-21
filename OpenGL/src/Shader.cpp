@@ -37,7 +37,6 @@ void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) {
 	// GL_FALSE = data does not need transfrom from rows to cols (because glm is in col layout)
 	// &matrix[0][0] returns the memory address of the first entry
 	unsigned int location = GetUniformLocation(name);
-	std::cout << "LOCATION: " << location << std::endl;
 	GLCALL(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0] ));
 }
 
