@@ -66,20 +66,12 @@ int main() {
 	// Create a modern OpenGL buffer
 	// ---------------------------------------------------------------------------
 
-	/*
+	// Origin (center) is 0,0
 	float positions[] = {
-		-600.0f, -600.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
-		 600.0f, -600.0f, 1.0f, 0.0f, // 1
-		 600.0f,  600.0f, 1.0f, 1.0f, // 2
-		-600.0f,  600.0f, 0.0f, 1.0f  // 3
-	};
-	*/
-
-	float positions[] = {
-		100.0f, 100.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
-		700.0f, 100.0f, 1.0f, 0.0f, // 1
-		700.0f, 700.0f, 1.0f, 1.0f, // 2
-		100.0f, 700.0f, 0.0f, 1.0f  // 3
+		-150.0f, -150.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
+		 150.0f, -150.0f, 1.0f, 0.0f, // 1
+		 150.0f,  150.0f, 1.0f, 1.0f, // 2
+		-150.0f,  150.0f, 0.0f, 1.0f  // 3
 	};
 
 	// ----------------------------------------------------------------------------
@@ -92,8 +84,8 @@ int main() {
 	};
 
 	// Set up blending for an alpha channel
-	GLCALL(glEnable(GL_BLEND));
-	GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
+	//GLCALL(glEnable(GL_BLEND));
+	//GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
 
 	// ----------------------------------------------------------------------------
 	// Setup everything for OpenGL
@@ -121,7 +113,7 @@ int main() {
 	glm::mat4 projection = glm::ortho(0.f, 1024.f, 0.f, 768.f, -1.0f, 1.0f);
 
 	// NOTE: glm::mat4(1.0f) = identity matrix (matrix equivalent of 1)
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-50.f, -50.f, 0));
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0));
 
 	// Load the shaders
 	Shader shader("resources/shaders/basic.shader");
@@ -141,7 +133,8 @@ int main() {
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	
-	glm::vec3 translation(25.f, 25.f, 0);
+	glm::vec3 translation1(200.f, 200.f, 0);
+	glm::vec3 translation2(200.f, 550.f, 0);
 
 	// ----------------------------------------------------------------------------
 	// Loop until the user closes the window
@@ -153,18 +146,25 @@ int main() {
 		// ImGUI frame
 		ImGui_ImplGlfwGL3_NewFrame();
 
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation1);
 		glm::mat4 mvp = projection * view * model;
 
 		shader.Bind();
 		shader.SetUniformMat4f("u_MVP", mvp);
+		renderer.Draw(va, ib, shader);
 
+		glm::mat4 model2 = glm::translate(glm::mat4(1.0f), translation2);
+		glm::mat4 mvp2 = projection * view * model2;
+
+		shader.Bind();
+		shader.SetUniformMat4f("u_MVP", mvp2);
 		renderer.Draw(va, ib, shader);
 
 		// ImGUI example
 		{
 			// passing in memory address of first entry of translation (&translation .x)
-			ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 1024.0f);   
+			ImGui::SliderFloat3("Translation 1", &translation1.x, 0.0f, 1024.0f);   
+			ImGui::SliderFloat3("Translation 2", &translation2.x, 0.0f, 1024.0f);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		}
 
