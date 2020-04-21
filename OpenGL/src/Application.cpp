@@ -66,10 +66,10 @@ int main() {
 	// ---------------------------------------------------------------------------
 
 	float positions[] = {
-		-0.5f, -0.5f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
-		 0.5f, -0.5f, 1.0f, 0.0f, // 1
-		 0.5f,  0.5f, 1.0f, 1.0f, // 2
-		-0.5f,  0.5f, 0.0f, 1.0f  // 3
+		-4.0f, -4.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
+		 4.0f, -4.0f, 1.0f, 0.0f, // 1
+		 4.0f,  4.0f, 1.0f, 1.0f, // 2
+		-4.0f,  4.0f, 0.0f, 1.0f  // 3
 	};
 
 	// ----------------------------------------------------------------------------
@@ -106,15 +106,25 @@ int main() {
 
 	// Create a 4:3 orthographic projection matrix
 	// > this represents the ratio of our window size (640 x 480)
-	// > 1/.75 = 4:3 ratio
+	// > 6/4.5 = 4:3 ratio
 	// > things further away do not get smaller (like ortho in blender)
 	// > This is the actual size of our window in vertex terms
-	glm::mat4 projection = glm::ortho(-1.f, 1.f, -.75f, .75f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(-6.f, 6.f, -4.5f, 4.5f, -1.0f, 1.0f);
+
+	// NOTE: glm::mat4(1.0f) = identity matrix (matrix equivalent of 1)
+	// > this creates an X offset of -1.f (moves to left ... simulates camera moving to the right)
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.f, 0, 0));
+	
+	// > this creates a Y offset of .25f (move up)
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, .25f, 0));
+
+	// Create the MVP matrix (CPU side calc since it is not in the shader)
+	glm::mat4 mvp = projection * view * model;
 
 	// Load the shaders
 	Shader shader("resources/shaders/basic.shader");
 	shader.Bind();
-	shader.SetUniformMat4f("u_MVP", projection);
+	shader.SetUniformMat4f("u_MVP", mvp);
 
 	Texture texture("resources/textures/half_life_alyx.png");
 	texture.Bind(); // 0 = texture slot
