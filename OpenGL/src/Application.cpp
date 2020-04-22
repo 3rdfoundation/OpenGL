@@ -160,7 +160,10 @@ int main() {
 		// ImGUI frame
 		ImGui_ImplGlfwGL3_NewFrame();
 
-		testClearColor.OnImGuiRender();
+		// ImGUI Demo Window
+		bool show_demo_window = true;
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::ShowDemoWindow(&show_demo_window);
 
 		/*
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation1);
