@@ -84,8 +84,8 @@ int main() {
 	};
 
 	// Set up blending for an alpha channel
-	//GLCALL(glEnable(GL_BLEND));
-	//GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
+	GLCALL(glEnable(GL_BLEND));
+	GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
 
 	// ----------------------------------------------------------------------------
 	// Setup everything for OpenGL
