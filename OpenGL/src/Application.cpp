@@ -147,6 +147,10 @@ int main() {
 
 	test::TestClearColor testClearColor;
 
+	// TODO: initialize a list of test classes with menu descriptions
+	int currentTest = -1;
+	bool selected_test[4] = { false, false, false, false };
+
 	// ----------------------------------------------------------------------------
 	// Loop until the user closes the window
 	// ----------------------------------------------------------------------------
@@ -163,7 +167,46 @@ int main() {
 		// ImGUI Demo Window
 		bool show_demo_window = true;
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-		ImGui::ShowDemoWindow(&show_demo_window);
+		//ImGui::ShowDemoWindow(&show_demo_window);
+
+		// ==============
+
+		bool* p_open = NULL;
+		if (!ImGui::Begin("ImGui Demo", p_open, ImGuiWindowFlags_MenuBar)) {
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return 1;
+		}
+		ImGui::PushItemWidth(-140);
+		ImGui::Text("dear imgui says hello. (%s)", IMGUI_VERSION);
+
+		// Menu : This just flips a boolean
+		// TODO: build this with a loop instead where menu description and class name are already known
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("Tests")) {
+				ImGui::MenuItem("Clear Color Test", NULL, &selected_test[0]);
+				ImGui::MenuItem("Color Rectangle", NULL, &selected_test[1]);
+				ImGui::MenuItem("Texture Rectangle", NULL, &selected_test[2]);
+				ImGui::MenuItem("1 Buffer, 2 MVPs", NULL, &selected_test[3]);
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::End();
+
+		// TODO: code this
+		//
+		// First, we have to have all test classes pre-constructed because C++ does not have reflection
+		// > This means the constructor/destructor are not the place for setup/teardown (easy enough)
+		//
+		// See if a menu item was clicked. If so:
+		// 1. teardown prior test (currentTest) if it exists
+		// 2. setup next test
+		// 3. set currentTest = selected test
+		// 4. reset the booleans to false
+
+		// ==============
 
 		/*
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation1);
