@@ -9,6 +9,8 @@
 #include "VertexBufferLayout.h"
 #include "imgui_impl_glfw_gl3.h"
 
+#include "tests\TestClearColor.h"
+
 int main() {
 
 	// ----------------------------------------------------------------------------
@@ -66,6 +68,7 @@ int main() {
 	// Create a modern OpenGL buffer
 	// ---------------------------------------------------------------------------
 
+		/*
 	// Origin (center) is 0,0
 	float positions[] = {
 		-150.0f, -150.0f, 0.0f, 0.0f, // 0 : X, Y, U, V (pos = X,Y) (tex coord = U,V)
@@ -82,6 +85,7 @@ int main() {
 		0, 1, 2, // TRIANGLE 1
 		2, 3, 0  // TRIANGLE 2
 	};
+	*/
 
 	// Set up blending for an alpha channel
 	GLCALL(glEnable(GL_BLEND));
@@ -91,6 +95,7 @@ int main() {
 	// Setup everything for OpenGL
 	// ----------------------------------------------------------------------------
 
+	/*
 	// Vertex Array
 	VertexArray va;
 
@@ -122,6 +127,7 @@ int main() {
 	Texture texture("resources/textures/half_life_alyx.png");
 	texture.Bind(); // 0 = texture slot
 	shader.SetUniform1i("u_Texture", 0); // make texture slot (0) available to shader code
+	*/
 
 	Renderer renderer;
 
@@ -129,12 +135,17 @@ int main() {
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window, true);
 	ImGui::StyleColorsDark();
+
+	/*
 	bool show_demo_window = true;
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	
 	glm::vec3 translation1(200.f, 200.f, 0);
 	glm::vec3 translation2(200.f, 550.f, 0);
+	*/
+
+	test::TestClearColor testClearColor;
 
 	// ----------------------------------------------------------------------------
 	// Loop until the user closes the window
@@ -143,9 +154,15 @@ int main() {
 
 		renderer.Clear();
 
+		testClearColor.OnUpdate(0.0f);
+		testClearColor.OnRender();
+
 		// ImGUI frame
 		ImGui_ImplGlfwGL3_NewFrame();
 
+		testClearColor.OnImGuiRender();
+
+		/*
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation1);
 		glm::mat4 mvp = projection * view * model;
 
@@ -167,6 +184,7 @@ int main() {
 			ImGui::SliderFloat3("Translation 2", &translation2.x, 0.0f, 1024.0f);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		}
+		*/
 
 		// ImGUI render
 		ImGui::Render();
