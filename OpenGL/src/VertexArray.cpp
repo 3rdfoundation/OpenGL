@@ -25,6 +25,7 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 }
 
 void VertexArray::Bind() const {
+	// Getting GL_INVALID_OPERATION
 	GLCALL(glBindVertexArray(m_RendererID));
 }
 
