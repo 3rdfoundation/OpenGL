@@ -13,20 +13,16 @@
 #include "examples\ExampleDualRender.h"
 #include "examples\ExampleRepository.h"
 
-int main() {
+// ============================================================================
+// SUPPORTING METHODS
+// ============================================================================
 
-	// ----------------------------------------------------------------------------
-	// Set up the windows to draw onto
-	// ----------------------------------------------------------------------------
-
-	//std::cout << "hello world" << std::endl;
-	//std::cin.get();
-
-	GLFWwindow* window;
+// GLFW : Set up the windows to draw onto
+GLFWwindow* CreateWindow() {
 
 	// Initialize the library
 	if (!glfwInit()) {
-		return -1;
+		return nullptr;
 	}
 
 	// Force profile to "Core Profile" on OpenGL v3.3
@@ -35,10 +31,10 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a windowed mode window and its OpenGL context
-	window = glfwCreateWindow(1024, 768, "Hello World", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1024, 768, "Hello World", NULL, NULL);
 	if (!window) {
 		glfwTerminate();
-		return -1;
+		return nullptr;
 	}
 
 	// Make the window's context current
@@ -48,49 +44,62 @@ int main() {
 	// > sync with monitor framerate
 	glfwSwapInterval(1);
 
-	// ----------------------------------------------------------------------------
-	// INITIALIZE GLEW
-	// ----------------------------------------------------------------------------
+	// ImGUI setup
+	ImGui::CreateContext();
+	ImGui_ImplGlfwGL3_Init(window, true);
+	ImGui::StyleColorsDark();
+
+	return window;
+
+}
+
+// GLEW : INITIALIZE
+int InitializeOpenGLGraphicCardInterface() {
 
 	// Glew init must occur after having a valid window context
 	if (glewInit() != GLEW_OK) {
-		std::cout << "GlewInit failed" << std::endl;
-		std::cin.get();
-		return -1;
+	std::cout << "GlewInit failed" << std::endl;
+	std::cin.get();
+	return -1;
 	}
 
 	// 4.6.0 NVIDIA 432
 	// 4.6.0 = OpenGL version
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
+	return 0;
+
+}
+
+int main() {
+
+	// GLFW & IMGUI
+	GLFWwindow* window = CreateWindow();
+	if (window == nullptr) {
+		return -1;
+	}
+
+	// GLEW
+	if (InitializeOpenGLGraphicCardInterface() != 0) {
+		return -1;
+	}
+
 	// SCOPE TO ENSURE TERMINATE DOES NOT HANG
 	{
 
-	// ----------------------------------------------------------------------------
-	// Setup everything for OpenGL
-	// ----------------------------------------------------------------------------
-
-	Renderer renderer;
-
-	// ImGUI setup
-	ImGui::CreateContext();
-	ImGui_ImplGlfwGL3_Init(window, true);
-	ImGui::StyleColorsDark();
-
-	// Initialize a list of examples
-	int currentExample = -1;
+	// Get the list of examples
 	example::ExampleRepository exampleRepo;
-
 	std::vector<example::Example*> examples = exampleRepo.GetExamples();
+
+	// Build boolean array to track which menu item is clicked
+	int currentExample = -1;
 	const int TOTAL_EXAMPLES_POSSIBLE = 100;
 	bool selectedExampleMenuItem[TOTAL_EXAMPLES_POSSIBLE];
 	for (int i = 0; i < examples.size(); i++) {
 		selectedExampleMenuItem[i] = false;
 	}
 
-	// ----------------------------------------------------------------------------
-	// Loop until the user closes the window
-	// ----------------------------------------------------------------------------
+	Renderer renderer;
 	while (!glfwWindowShouldClose(window)) {
 
 		renderer.Clear();
@@ -109,7 +118,7 @@ int main() {
 		//ImGui::ShowDemoWindow(&show_demo_window);
 
 		bool* p_open = NULL;
-		if (!ImGui::Begin("ImGui Demo", p_open, ImGuiWindowFlags_MenuBar)) {
+		if (!ImGui::Begin("OpenGL Playland", p_open, ImGuiWindowFlags_MenuBar)) {
 			ImGui::End();
 			return 1;
 		}
@@ -129,14 +138,18 @@ int main() {
 
 		// Note: need to use examples for size since it has the actual entries
 		for (int i = 0; i < examples.size(); i++) {
-			// Teardown
+			// Teardown : This happens 2 ways:
+			// 1 : If an example is active an you click on its menu item
+			// 2 : If an example is active and you click on a different menu item
 			if (currentExample != -1 
-				&& (i == currentExample && !selectedExampleMenuItem[i] || i != currentExample && selectedExampleMenuItem[i])) {
+				&& (i == currentExample && !selectedExampleMenuItem[i] 
+					|| i != currentExample && selectedExampleMenuItem[i])) {
 				// tear down prior example
 				examples[currentExample]->Teardown();
 				selectedExampleMenuItem[currentExample] = false;
 				currentExample = -1;
 			}
+			// Setup
 			if (selectedExampleMenuItem[i] && currentExample == -1) {
 				// setup current example
 				examples[i]->Setup();
@@ -146,6 +159,7 @@ int main() {
 
 		if (currentExample != -1) {
 			ImGui::Text("ACTIVE EXAMPLE: %s", examples[currentExample]->GetDescription());
+			ImGui::Separator();
 			examples[currentExample]->OnImGuiRender();
 		}
 
