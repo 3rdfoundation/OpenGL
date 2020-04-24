@@ -17,7 +17,7 @@ namespace example {
 		void OnRender(Renderer& renderer) override;
 		void OnImGuiRender() override;
 
-	//private:
+		// CUSTOM STUFF
 		float m_ClearColor[4];
 		float m_Positions[16];
 		unsigned int m_Indices[6];
@@ -25,14 +25,14 @@ namespace example {
 		glm::vec3* m_Translation1;
 		glm::vec3* m_Translation2;
 
-		VertexArray* m_VertexArray;
-		VertexBuffer* m_VertexBuffer;
-		IndexBuffer* m_IndexBuffer;
+		std::unique_ptr<VertexArray> m_VertexArray;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
 		glm::mat4 m_Projection;
 		glm::mat4 m_View;
-		Shader* m_Shader;
-		Texture* m_Texture;
+		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Texture> m_Texture;
 
 	};
 

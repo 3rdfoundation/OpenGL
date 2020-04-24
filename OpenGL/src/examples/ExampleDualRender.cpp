@@ -46,10 +46,10 @@ namespace example {
 		//std::cout << "Setup STARTED" << std::endl;
 		
 		// Vertex Array
-		m_VertexArray = new VertexArray();
+		m_VertexArray = std::make_unique<VertexArray>();
 
 		// Vertex Buffer
-		m_VertexBuffer = new VertexBuffer(m_Positions, 4 * 4 * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(m_Positions, 4 * 4 * sizeof(float));
 
 		// Vertex Buffer Layout #1 (2 dimensional position)
 		VertexBufferLayout layout;
@@ -57,7 +57,7 @@ namespace example {
 		layout.Push<float>(2);
 		m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
-		m_IndexBuffer = new IndexBuffer(m_Indices, 2 * 3);
+		m_IndexBuffer = std::make_unique<IndexBuffer>(m_Indices, 2 * 3);
 
 		// Create a 4:3 orthographic projection matrix
 		// > this represents the ratio of our window size (1024 x 760)
@@ -69,10 +69,10 @@ namespace example {
 		m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0));
 
 		// Load the shaders
-		m_Shader = new Shader("resources/shaders/basic.shader");
+		m_Shader = std::make_unique<Shader>("resources/shaders/basic.shader");
 		m_Shader->Bind();
 
-		m_Texture = new Texture("resources/textures/half_life_alyx.png");
+		m_Texture = std::make_unique<Texture>("resources/textures/half_life_alyx.png");
 		//Texture texture("c:/stuff/develop/OpenGL/OpenGL/resources/textures/half_life_alyx.png");
 		m_Texture->Bind(); // 0 = texture slot
 		m_Shader->SetUniform1i("u_Texture", 0); // make texture slot (0) available to shader code
