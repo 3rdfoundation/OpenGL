@@ -137,18 +137,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\examples\ExampleDualRender.h" />
-    <ClInclude Include="src\examples\ExampleRepository.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\OpenGLUtils.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\examples\Example.h" />
-    <ClInclude Include="src\examples\ExampleClearColor.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
+    <ClInclude Include="src\examples\Example.h" />
+    <ClInclude Include="src\examples\ExampleClearColor.h" />
+    <ClInclude Include="src\examples\ExampleCyclingColor.h" />
+    <ClInclude Include="src\examples\ExampleDualRender.h" />
+    <ClInclude Include="src\examples\ExampleRepository.h" />
     <ClInclude Include="src\opengl.h" />
     <ClInclude Include="src\vendor\glm\simd\common.h" />
     <ClInclude Include="src\vendor\glm\simd\exponential.h" />
@@ -171,16 +172,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\examples\ExampleDualRender.cpp" />
-    <ClCompile Include="src\examples\ExampleRepository.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\OpenGLUtils.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\examples\ExampleClearColor.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\examples\ExampleClearColor.cpp" />
+    <ClCompile Include="src\examples\ExampleCyclingColor.cpp" />
+    <ClCompile Include="src\examples\ExampleDualRender.cpp" />
+    <ClCompile Include="src\examples\ExampleRepository.cpp" />
     <ClCompile Include="src\opengl.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

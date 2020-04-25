@@ -1,6 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="examples">
+      <UniqueIdentifier>{84D830B1-70A5-8BBC-99BE-796485EAC04A}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -29,6 +32,21 @@
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
+    <ClInclude Include="src\examples\Example.h">
+      <Filter>examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\examples\ExampleClearColor.h">
+      <Filter>examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\examples\ExampleCyclingColor.h">
+      <Filter>examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\examples\ExampleDualRender.h">
+      <Filter>examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\examples\ExampleRepository.h">
+      <Filter>examples</Filter>
+    </ClInclude>
     <ClInclude Include="src\opengl.h" />
     <ClInclude Include="src\vendor\glm\simd\common.h">
       <Filter>vendor\glm\simd</Filter>
@@ -84,10 +102,6 @@
     <ClInclude Include="src\vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\examples\Example.h" />
-    <ClInclude Include="src\examples\ExampleClearColor.h" />
-    <ClInclude Include="src\examples\ExampleRepository.h" />
-    <ClInclude Include="src\examples\ExampleDualRender.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
@@ -98,6 +112,18 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\examples\ExampleClearColor.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
+    <ClCompile Include="src\examples\ExampleCyclingColor.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
+    <ClCompile Include="src\examples\ExampleDualRender.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
+    <ClCompile Include="src\examples\ExampleRepository.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
     <ClCompile Include="src\opengl.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp">
       <Filter>vendor\glm\detail</Filter>
@@ -120,8 +146,5 @@
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\examples\ExampleClearColor.cpp" />
-    <ClCompile Include="src\examples\ExampleRepository.cpp" />
-    <ClCompile Include="src\examples\ExampleDualRender.cpp" />
   </ItemGroup>
 </Project>

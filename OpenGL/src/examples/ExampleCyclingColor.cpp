@@ -1,5 +1,5 @@
 #include "opengl.h"
-#include "ExampleDualRender.h"
+#include "ExampleCyclingColor.h"
 
 #include "opengl.h"
 #include "IndexBuffer.h"
@@ -15,7 +15,7 @@ namespace example {
 
 	// Positions =  X, Y, U, V (pos = X,Y) (tex coord = U,V)
 	// Indexes = 2 triangles (3 vertices per triangle)
-	ExampleDualRender::ExampleDualRender() : 
+	ExampleCyclingColor::ExampleCyclingColor() : 
 
 		m_ClearColor { 
 			0.8f, 0.3f, 0.2f, 1.0f },
@@ -28,22 +28,27 @@ namespace example {
 
 		m_Indices {
 			0, 1, 2,
-			2, 3, 0 } {
+			2, 3, 0 },
+	
+		m_CycleDirection {1}
+	
+	{
 
-		m_Description = "Dual Render";
+		m_Description = "Cycling Color";
 		m_Translation1 = new glm::vec3(200.f, 200.f, 0);
-		m_Translation2 = new glm::vec3(200.f, 550.f, 0);
 
 	}
 
-	ExampleDualRender::~ExampleDualRender() {
+	ExampleCyclingColor::~ExampleCyclingColor() {
 	}
 
-	void ExampleDualRender::Setup() {
+	void ExampleCyclingColor::Setup() {
 
 		// Set up blending for an alpha channel
 		GLCALL(glEnable(GL_BLEND));
 		GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
+
+		//std::cout << "Setup STARTED" << std::endl;
 		
 		// Vertex Array
 		m_VertexArray = std::make_unique<VertexArray>();
@@ -69,45 +74,46 @@ namespace example {
 		m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0));
 
 		// Load the shaders
-		m_Shader = std::make_unique<Shader>("resources/shaders/texture.shader");
+		m_Shader = std::make_unique<Shader>("resources/shaders/color.shader");
 		m_Shader->Bind();
 
-		m_Texture = std::make_unique<Texture>("resources/textures/half_life_alyx.png");
-		m_Texture->Bind(); // 0 = texture slot
-		m_Shader->SetUniform1i("u_Texture", 0); // make texture slot (0) available to shader code
+		//std::cout << "Setup ENDED" << std::endl;
 	}
 
-	void ExampleDualRender::Teardown() {
+	void ExampleCyclingColor::Teardown() {
 		GLCALL(glClearColor(0, 0, 0, 0));
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 	}
 
-	void ExampleDualRender::OnUpdate(float DeltaTime) {
+	void ExampleCyclingColor::OnUpdate(float DeltaTime) {
 	}
 
-	void ExampleDualRender::OnRender(Renderer& renderer) {
+	void ExampleCyclingColor::OnRender(Renderer& renderer) {
 
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), *m_Translation1);
 		glm::mat4 mvp = m_Projection * m_View * model;
 
+		m_Red += .01f * m_CycleDirection;
+		if (m_Red >= 1) {
+			m_CycleDirection = -1;
+			m_Red = 1;
+		}
+		else if (m_Red < 0) {
+			m_CycleDirection = 1;
+			m_Red = 0;
+		}
+
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
-		renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
-
-		glm::mat4 model2 = glm::translate(glm::mat4(1.0f), *m_Translation2);
-		glm::mat4 mvp2 = m_Projection * m_View * model2;
-
-		m_Shader->Bind();
-		m_Shader->SetUniformMat4f("u_MVP", mvp2);
+		m_Shader->SetUniform4f("u_Color", m_Red, 0, 0, 1);
 		renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
 
 	}
 
-	void ExampleDualRender::OnImGuiRender() {
+	void ExampleCyclingColor::OnImGuiRender() {
 
 		// passing in memory address of first entry of translation (&translation .x)
 		ImGui::SliderFloat3("Translation 1", &m_Translation1->x, 0.0f, 1024.0f);
-		ImGui::SliderFloat3("Translation 2", &m_Translation2->x, 0.0f, 1024.0f);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 	}
