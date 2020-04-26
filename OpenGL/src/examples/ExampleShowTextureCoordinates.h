@@ -4,11 +4,11 @@
 
 namespace example {
 
-	class ExampleCyclingColor : public Example {
+	class ExampleShowTextureCoordinates : public Example {
 
 	public:
-		ExampleCyclingColor();
-		~ExampleCyclingColor();
+		ExampleShowTextureCoordinates();
+		~ExampleShowTextureCoordinates();
 
 		void Setup() override;
 		void Teardown() override;
@@ -24,6 +24,7 @@ namespace example {
 		unsigned int m_Indices[6];
 		
 		glm::vec3* m_Translation1;
+		glm::vec3* m_Translation2;
 
 		std::unique_ptr<VertexArray> m_VertexArray;
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
@@ -32,9 +33,6 @@ namespace example {
 		glm::mat4 m_Projection;
 		glm::mat4 m_View;
 		std::unique_ptr<Shader> m_Shader;
-
-		float m_CycleDirection;
-		float m_Red;
 
 	};
 

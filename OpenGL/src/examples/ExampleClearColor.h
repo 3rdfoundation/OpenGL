@@ -12,6 +12,7 @@ namespace example {
 		void Setup() override;
 		void Teardown() override;
 
+		std::string GetDescription() override;
 		void OnUpdate(float DeltaTime) override;
 		void OnRender(Renderer& renderer) override;
 		void OnImGuiRender() override;

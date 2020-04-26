@@ -30,13 +30,16 @@ namespace example {
 			0, 1, 2,
 			2, 3, 0 } {
 
-		m_Description = "Dual Render";
 		m_Translation1 = new glm::vec3(200.f, 200.f, 0);
 		m_Translation2 = new glm::vec3(200.f, 550.f, 0);
 
 	}
 
 	ExampleDualRender::~ExampleDualRender() {
+	}
+
+	std::string ExampleDualRender::GetDescription() {
+		return "Dual Render";
 	}
 
 	void ExampleDualRender::Setup() {

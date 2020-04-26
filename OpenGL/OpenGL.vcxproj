@@ -151,6 +151,7 @@
     <ClInclude Include="src\examples\ExampleCyclingColor.h" />
     <ClInclude Include="src\examples\ExampleDualRender.h" />
     <ClInclude Include="src\examples\ExampleRepository.h" />
+    <ClInclude Include="src\examples\ExampleShowTextureCoordinates.h" />
     <ClInclude Include="src\examples\ExampleVertexColor.h" />
     <ClInclude Include="src\opengl.h" />
     <ClInclude Include="src\vendor\glm\simd\common.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="src\examples\ExampleCyclingColor.cpp" />
     <ClCompile Include="src\examples\ExampleDualRender.cpp" />
     <ClCompile Include="src\examples\ExampleRepository.cpp" />
+    <ClCompile Include="src\examples\ExampleShowTextureCoordinates.cpp" />
     <ClCompile Include="src\examples\ExampleVertexColor.cpp" />
     <ClCompile Include="src\opengl.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

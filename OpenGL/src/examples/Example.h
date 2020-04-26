@@ -7,12 +7,11 @@ namespace example {
 	class Example {
 	
 	public:
-		std::string m_Description;
 
 		Example() {}
 		virtual ~Example() {}
 
-		std::string GetDescription() { return m_Description; }
+		virtual std::string GetDescription() = 0;
 		virtual void Setup() {}
 		virtual void Teardown() {}
 

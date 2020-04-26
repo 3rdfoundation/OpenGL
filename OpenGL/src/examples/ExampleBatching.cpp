@@ -38,12 +38,15 @@ namespace example {
 			4, 5, 6,
 			6, 7, 4 } {
 
-		m_Description = "Batching";
 		m_Translation1 = new glm::vec3(200.f, 200.f, 0);
 
 	}
 
 	ExampleBatching::~ExampleBatching() {
+	}
+
+	std::string ExampleBatching::GetDescription() {
+		return "Batching";
 	}
 
 	void ExampleBatching::Setup() {

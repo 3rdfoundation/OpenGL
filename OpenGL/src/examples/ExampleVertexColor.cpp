@@ -38,12 +38,15 @@ namespace example {
 			4, 5, 6,
 			6, 7, 4 } {
 
-		m_Description = "Vertex Color";
 		m_Translation1 = new glm::vec3(200.f, 200.f, 0);
 
 	}
 
 	ExampleVertexColor::~ExampleVertexColor() {
+	}
+
+	std::string ExampleVertexColor::GetDescription() {
+		return "Vertex Color";
 	}
 
 	void ExampleVertexColor::Setup() {

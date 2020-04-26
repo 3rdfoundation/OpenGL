@@ -13,8 +13,8 @@ Texture::Texture(const std::string& path)
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
 
 	// m_RendererID is an output from glGenTextures
-	GLCALL(glGenTextures(1, &m_RendererID));
-
+	//GLCALL(glGenTextures(1, &m_RendererID));
+	GLCALL(glCreateTextures(GL_TEXTURE_2D,1, &m_RendererID));
 	GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
 	// These 4 calls are always required or you will get a black texture

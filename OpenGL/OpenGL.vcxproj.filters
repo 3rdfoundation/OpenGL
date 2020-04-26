@@ -50,6 +50,9 @@
     <ClInclude Include="src\examples\ExampleRepository.h">
       <Filter>examples</Filter>
     </ClInclude>
+    <ClInclude Include="src\examples\ExampleShowTextureCoordinates.h">
+      <Filter>examples</Filter>
+    </ClInclude>
     <ClInclude Include="src\examples\ExampleVertexColor.h">
       <Filter>examples</Filter>
     </ClInclude>
@@ -131,6 +134,9 @@
       <Filter>examples</Filter>
     </ClCompile>
     <ClCompile Include="src\examples\ExampleRepository.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
+    <ClCompile Include="src\examples\ExampleShowTextureCoordinates.cpp">
       <Filter>examples</Filter>
     </ClCompile>
     <ClCompile Include="src\examples\ExampleVertexColor.cpp">
