@@ -35,13 +35,17 @@ uniform sampler2D u_Texture_Channel_0;
 uniform sampler2D u_Texture_Channel_1;
 
 void main() {
-	float v_channel = 1;
-	if (v_channel == 0) {
+	float channel = v_Channel;
+	if (channel == 0) {
 		vec4 texColor = texture(u_Texture_Channel_0, v_TexCoord);
 		color = texColor;
 	}
-	else {
+	else if (channel == 1) {
 		vec4 texColor = texture(u_Texture_Channel_1, v_TexCoord);
+		color = texColor;
+	}
+	else {
+		vec4 texColor = vec4(1, 0, 0, 1);
 		color = texColor;
 	}
 };

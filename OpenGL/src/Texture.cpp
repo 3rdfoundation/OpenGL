@@ -2,7 +2,7 @@
 #include "Texture.h"
 #include "stb_image/stb_image.h"
 
-Texture::Texture(const std::string& path) 
+Texture::Texture(const std::string& path)
 	: m_FilePath(path), m_LocalBuffer(nullptr), 
 	m_Width(0), m_Height(0), m_BPP(0), m_RendererID(0) {
 
@@ -12,7 +12,11 @@ Texture::Texture(const std::string& path)
 	stbi_set_flip_vertically_on_load(1);
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
 
+	// m_RendererID is an output from glGenTextures
 	GLCALL(glGenTextures(1, &m_RendererID));
+
+	std::cout << "text render id: " << m_RendererID << std::endl;
+
 	GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
 	// These 4 calls are always required or you will get a black texture
@@ -22,7 +26,7 @@ Texture::Texture(const std::string& path)
 	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)); // Y for a texture
 
 	GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
-	GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
+	//GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
 
 	if (m_LocalBuffer) {
 		stbi_image_free(m_LocalBuffer);

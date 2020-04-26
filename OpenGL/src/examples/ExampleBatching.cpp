@@ -48,10 +48,6 @@ namespace example {
 
 	void ExampleBatching::Setup() {
 
-		// Set up blending for an alpha channel
-		GLCALL(glEnable(GL_BLEND));
-		GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
-		
 		// Vertex Array
 		m_VertexArray = std::make_unique<VertexArray>();
 
@@ -81,11 +77,12 @@ namespace example {
 		m_Shader->Bind();
 
 		m_Texture_1 = std::make_unique<Texture>("resources/textures/half_life_alyx.png");
-		m_Texture_1->Bind(0); // 0 = texture slot
-		m_Shader->SetUniform1i("u_Texture_Channel_0", 0); // make texture slot (0) available to shader code
+		m_Texture_1->Bind(0);
 
 		m_Texture_2 = std::make_unique<Texture>("resources/textures/half_life_alyx_2.png");
-		m_Texture_2->Bind(1); // 0 = texture slot
+		m_Texture_2->Bind(1);
+
+		m_Shader->SetUniform1i("u_Texture_Channel_0", 0); // make texture slot (0) available to shader code
 		m_Shader->SetUniform1i("u_Texture_Channel_1", 1); // make texture slot (0) available to shader code
 	}
 
@@ -98,6 +95,9 @@ namespace example {
 	}
 
 	void ExampleBatching::OnRender(Renderer& renderer) {
+
+		// Set a non-black background so I can see wtf is going on
+		GLCALL(glClearColor(.2f, .3f, .4f, 0));
 
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), *m_Translation1);
 		glm::mat4 mvp = m_Projection * m_View * model;
