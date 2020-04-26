@@ -22,12 +22,12 @@ namespace example {
 
 		m_Positions {
 			-150.0f, -150.0f, 0.0f, 0.0f, 0.0f,
-			 150.0f, -150.0f, 1.0f, 0.0f, 0.0f,
+			 150.0f, -150.0f, 1.0f, 0.0f, 2.0f,
 			 150.0f,  150.0f, 1.0f, 1.0f, 0.0f,
 			-150.0f,  150.0f, 0.0f, 1.0f, 0.0f,
 
 			-150.0f,  200.0f, 0.0f, 0.0f, 1.0f,
-			150.0f,   200.0f, 1.0f, 0.0f, 1.0f,
+			150.0f,   200.0f, 1.0f, 0.0f, 2.0f,
 			150.0f,   500.0f, 1.0f, 1.0f, 1.0f,
 			-150.0f,  500.0f, 0.0f, 1.0f, 1.0f },
 
@@ -89,6 +89,9 @@ namespace example {
 	void ExampleBatching::Teardown() {
 		GLCALL(glClearColor(0, 0, 0, 0));
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
+		GLCALL(m_Texture_2->Unbind());
+		GLCALL(m_Texture_2->Unbind());
+		GLCALL(m_Shader->Unbind());
 	}
 
 	void ExampleBatching::OnUpdate(float DeltaTime) {

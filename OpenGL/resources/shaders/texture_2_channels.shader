@@ -38,14 +38,16 @@ void main() {
 	float channel = v_Channel;
 	if (channel == 0) {
 		vec4 texColor = texture(u_Texture_Channel_0, v_TexCoord);
+		//vec4 texColor = vec4(.1f, .1f, .7f, 0);
 		color = texColor;
 	}
 	else if (channel == 1) {
 		vec4 texColor = texture(u_Texture_Channel_1, v_TexCoord);
+		//vec4 texColor = vec4(.1f, .7f, .1f, 0);
 		color = texColor;
 	}
 	else {
-		vec4 texColor = vec4(1, 0, 0, 1);
+		vec4 texColor = vec4(.7f, .1f, .1f, 0);
 		color = texColor;
 	}
 };

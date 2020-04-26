@@ -80,6 +80,8 @@ namespace example {
 	void ExampleDualRender::Teardown() {
 		GLCALL(glClearColor(0, 0, 0, 0));
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
+		GLCALL(m_Texture->Unbind());
+		GLCALL(m_Shader->Unbind());
 	}
 
 	void ExampleDualRender::OnUpdate(float DeltaTime) {
