@@ -35,6 +35,9 @@
     <ClInclude Include="src\examples\Example.h">
       <Filter>examples</Filter>
     </ClInclude>
+    <ClInclude Include="src\examples\ExampleBatching.h">
+      <Filter>examples</Filter>
+    </ClInclude>
     <ClInclude Include="src\examples\ExampleClearColor.h">
       <Filter>examples</Filter>
     </ClInclude>
@@ -112,6 +115,9 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\examples\ExampleBatching.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
     <ClCompile Include="src\examples\ExampleClearColor.cpp">
       <Filter>examples</Filter>
     </ClCompile>
