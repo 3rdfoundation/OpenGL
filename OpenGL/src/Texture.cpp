@@ -15,8 +15,6 @@ Texture::Texture(const std::string& path)
 	// m_RendererID is an output from glGenTextures
 	GLCALL(glGenTextures(1, &m_RendererID));
 
-	std::cout << "text render id: " << m_RendererID << std::endl;
-
 	GLCALL(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
 	// These 4 calls are always required or you will get a black texture

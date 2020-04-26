@@ -1,5 +1,5 @@
 #include "opengl.h"
-#include "ExampleCyclingColor.h"
+#include "ExampleVertexColor.h"
 
 #include "opengl.h"
 #include "IndexBuffer.h"
@@ -13,56 +13,55 @@
 
 namespace example {
 
-	// Positions =  X, Y, U, V (pos = X,Y) (tex coord = U,V)
-	// Indexes = 2 triangles (3 vertices per triangle)
-	ExampleCyclingColor::ExampleCyclingColor() : 
+	// Positions =  X, Y, U, V, C (pos = X,Y) (tex coord = U,V) (channel = C)
+	// Indexes = 2 objects each with 2 triangles (3 vertices per triangle)
+	ExampleVertexColor::ExampleVertexColor() :
 
 		m_ClearColor { 
 			0.8f, 0.3f, 0.2f, 1.0f },
 
 		m_Positions {
-			-150.0f, -150.0f, 0.0f, 0.0f,    
-			 150.0f, -150.0f, 1.0f, 0.0f,
-			 150.0f,  150.0f, 1.0f, 1.0f,
-			-150.0f,  150.0f, 0.0f, 1.0f },
+			-150.0f, -150.0f, 0.0f, 0.0f, 0.5f, 0.3f, 0.4f, 1.f,
+			 150.0f, -150.0f, 1.0f, 0.0f, 0.5f, 0.3f, 0.4f, 1.f,
+			 150.0f,  150.0f, 1.0f, 1.0f, 0.5f, 0.3f, 0.4f, 1.f,
+			-150.0f,  150.0f, 0.0f, 1.0f, 0.5f, 0.3f, 0.4f, 1.f,
+
+			-150.0f,  200.0f, 0.0f, 0.0f, 0.2f, 0.5f, 0.4f, 1.f,
+			150.0f,   200.0f, 1.0f, 0.0f, 0.2f, 0.5f, 0.4f, 1.f,
+			150.0f,   500.0f, 1.0f, 1.0f, 0.2f, 0.5f, 0.4f, 1.f,
+			-150.0f,  500.0f, 0.0f, 1.0f, 0.2f, 0.5f, 0.4f, 1.f },
 
 		m_Indices {
 			0, 1, 2,
-			2, 3, 0 },
-	
-		m_CycleDirection {1}
-	
-	{
+			2, 3, 0,
 
-		m_Description = "Cycling Color";
+			4, 5, 6,
+			6, 7, 4 } {
+
+		m_Description = "Vertex Color";
 		m_Translation1 = new glm::vec3(200.f, 200.f, 0);
 
 	}
 
-	ExampleCyclingColor::~ExampleCyclingColor() {
+	ExampleVertexColor::~ExampleVertexColor() {
 	}
 
-	void ExampleCyclingColor::Setup() {
+	void ExampleVertexColor::Setup() {
 
-		// Set up blending for an alpha channel
-		GLCALL(glEnable(GL_BLEND));
-		GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA));
-
-		//std::cout << "Setup STARTED" << std::endl;
-		
 		// Vertex Array
 		m_VertexArray = std::make_unique<VertexArray>();
 
 		// Vertex Buffer
-		m_VertexBuffer = std::make_unique<VertexBuffer>(m_Positions, 4 * 4 * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(m_Positions, 8 * 8 * sizeof(float));
 
-		// Vertex Buffer Layout #1 (2 dimensional position)
+		// Vertex Buffer Layout of a single row (X,Y + U,V + C)
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);
+		layout.Push<float>(4);
 		m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
-		m_IndexBuffer = std::make_unique<IndexBuffer>(m_Indices, 2 * 3);
+		m_IndexBuffer = std::make_unique<IndexBuffer>(m_Indices, 4 * 3);
 
 		// Create a 4:3 orthographic projection matrix
 		// > this represents the ratio of our window size (1024 x 760)
@@ -74,44 +73,34 @@ namespace example {
 		m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0));
 
 		// Load the shaders
-		m_Shader = std::make_unique<Shader>("resources/shaders/color.shader");
+		m_Shader = std::make_unique<Shader>("resources/shaders/texture_vertex_color.shader");
 		m_Shader->Bind();
-
-		//std::cout << "Setup ENDED" << std::endl;
 	}
 
-	void ExampleCyclingColor::Teardown() {
+	void ExampleVertexColor::Teardown() {
 		GLCALL(glClearColor(0, 0, 0, 0));
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
-		GLCALL(glDisable(GL_BLEND));
+		GLCALL(m_Shader->Unbind());
 	}
 
-	void ExampleCyclingColor::OnUpdate(float DeltaTime) {
+	void ExampleVertexColor::OnUpdate(float DeltaTime) {
 	}
 
-	void ExampleCyclingColor::OnRender(Renderer& renderer) {
+	void ExampleVertexColor::OnRender(Renderer& renderer) {
+
+		// Set a non-black background so I can see wtf is going on
+		GLCALL(glClearColor(.2f, .3f, .4f, 0));
 
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), *m_Translation1);
 		glm::mat4 mvp = m_Projection * m_View * model;
 
-		m_Red += .01f * m_CycleDirection;
-		if (m_Red >= 1) {
-			m_CycleDirection = -1;
-			m_Red = 1;
-		}
-		else if (m_Red < 0) {
-			m_CycleDirection = 1;
-			m_Red = 0;
-		}
-
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
-		m_Shader->SetUniform4f("u_Color", m_Red, 0, 0, 1);
 		renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
 
 	}
 
-	void ExampleCyclingColor::OnImGuiRender() {
+	void ExampleVertexColor::OnImGuiRender() {
 
 		// passing in memory address of first entry of translation (&translation .x)
 		ImGui::SliderFloat3("Translation 1", &m_Translation1->x, 0.0f, 1024.0f);

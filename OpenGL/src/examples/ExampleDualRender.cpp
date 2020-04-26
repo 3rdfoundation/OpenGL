@@ -82,6 +82,7 @@ namespace example {
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 		GLCALL(m_Texture->Unbind());
 		GLCALL(m_Shader->Unbind());
+		GLCALL(glDisable(GL_BLEND));
 	}
 
 	void ExampleDualRender::OnUpdate(float DeltaTime) {

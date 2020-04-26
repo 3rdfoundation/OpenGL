@@ -50,6 +50,9 @@
     <ClInclude Include="src\examples\ExampleRepository.h">
       <Filter>examples</Filter>
     </ClInclude>
+    <ClInclude Include="src\examples\ExampleVertexColor.h">
+      <Filter>examples</Filter>
+    </ClInclude>
     <ClInclude Include="src\opengl.h" />
     <ClInclude Include="src\vendor\glm\simd\common.h">
       <Filter>vendor\glm\simd</Filter>
@@ -128,6 +131,9 @@
       <Filter>examples</Filter>
     </ClCompile>
     <ClCompile Include="src\examples\ExampleRepository.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
+    <ClCompile Include="src\examples\ExampleVertexColor.cpp">
       <Filter>examples</Filter>
     </ClCompile>
     <ClCompile Include="src\opengl.cpp" />
