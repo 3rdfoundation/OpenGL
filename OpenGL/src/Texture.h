@@ -5,7 +5,7 @@
 class Texture {
 
 public:
-	Texture(const std::string& path);
+	Texture(const std::string& path, const unsigned int slot);
 	~Texture();
 
 	// Mobile = 8 slots, PC = 32 slots

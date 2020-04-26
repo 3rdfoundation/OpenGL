@@ -45,7 +45,8 @@ void main() {
 		color = texColor;
 	}
 	else {
-		vec4 texColor = vec4(1, 0, 0, 1);
+		// light blue
+		vec4 texColor = vec4(.3f, .4f, .5f, 1);
 		color = texColor;
 	}
 };

@@ -72,8 +72,8 @@ namespace example {
 		m_Shader = std::make_unique<Shader>("resources/shaders/texture.shader");
 		m_Shader->Bind();
 
-		m_Texture = std::make_unique<Texture>("resources/textures/half_life_alyx.png");
-		m_Texture->Bind(); // 0 = texture slot
+		m_Texture = std::make_unique<Texture>("resources/textures/half_life_alyx.png",0);
+		//m_Texture->Bind(); // 0 = texture slot
 		m_Shader->SetUniform1i("u_Texture", 0); // make texture slot (0) available to shader code
 	}
 
