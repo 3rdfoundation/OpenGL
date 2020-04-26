@@ -19,7 +19,7 @@ namespace example {
 
 		// CUSTOM STUFF
 		float m_ClearColor[4];
-		float m_Positions[16 * 2];
+		float m_Positions[8 * 5];
 		unsigned int m_Indices[6 * 2];
 		
 		glm::vec3* m_Translation1;
@@ -31,7 +31,9 @@ namespace example {
 		glm::mat4 m_Projection;
 		glm::mat4 m_View;
 		std::unique_ptr<Shader> m_Shader;
-		std::unique_ptr<Texture> m_Texture;
+
+		std::unique_ptr<Texture> m_Texture_1;
+		std::unique_ptr<Texture> m_Texture_2;
 
 	};
 

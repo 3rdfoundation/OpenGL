@@ -13,23 +13,23 @@
 
 namespace example {
 
-	// Positions =  X, Y, U, V (pos = X,Y) (tex coord = U,V)
-	// Indexes = 2 triangles (3 vertices per triangle)
+	// Positions =  X, Y, U, V, C (pos = X,Y) (tex coord = U,V) (channel = C)
+	// Indexes = 2 objects each with 2 triangles (3 vertices per triangle)
 	ExampleBatching::ExampleBatching() :
 
 		m_ClearColor { 
 			0.8f, 0.3f, 0.2f, 1.0f },
 
 		m_Positions {
-			-150.0f, -150.0f, 0.0f, 0.0f,    
-			 150.0f, -150.0f, 1.0f, 0.0f,
-			 150.0f,  150.0f, 1.0f, 1.0f,
-			-150.0f,  150.0f, 0.0f, 1.0f,
+			-150.0f, -150.0f, 0.0f, 0.0f, 0.0f,
+			 150.0f, -150.0f, 1.0f, 0.0f, 0.0f,
+			 150.0f,  150.0f, 1.0f, 1.0f, 0.0f,
+			-150.0f,  150.0f, 0.0f, 1.0f, 0.0f,
 
-			-150.0f,  200.0f, 0.0f, 0.0f,
-			150.0f,   200.0f, 1.0f, 0.0f,
-			150.0f,   500.0f, 1.0f, 1.0f,
-			-150.0f,  500.0f, 0.0f, 1.0f },
+			-150.0f,  200.0f, 0.0f, 0.0f, 1.0f,
+			150.0f,   200.0f, 1.0f, 0.0f, 1.0f,
+			150.0f,   500.0f, 1.0f, 1.0f, 1.0f,
+			-150.0f,  500.0f, 0.0f, 1.0f, 1.0f },
 
 		m_Indices {
 			0, 1, 2,
@@ -56,12 +56,13 @@ namespace example {
 		m_VertexArray = std::make_unique<VertexArray>();
 
 		// Vertex Buffer
-		m_VertexBuffer = std::make_unique<VertexBuffer>(m_Positions, 8 * 4 * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(m_Positions, 8 * 5 * sizeof(float));
 
-		// Vertex Buffer Layout #1 (2 dimensional position)
+		// Vertex Buffer Layout of a single row (X,Y + U,V + C)
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);
+		layout.Push<float>(1);
 		m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
 		m_IndexBuffer = std::make_unique<IndexBuffer>(m_Indices, 4 * 3);
@@ -76,12 +77,16 @@ namespace example {
 		m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0));
 
 		// Load the shaders
-		m_Shader = std::make_unique<Shader>("resources/shaders/texture.shader");
+		m_Shader = std::make_unique<Shader>("resources/shaders/texture_2_channels.shader");
 		m_Shader->Bind();
 
-		m_Texture = std::make_unique<Texture>("resources/textures/half_life_alyx.png");
-		m_Texture->Bind(); // 0 = texture slot
-		m_Shader->SetUniform1i("u_Texture", 0); // make texture slot (0) available to shader code
+		m_Texture_1 = std::make_unique<Texture>("resources/textures/half_life_alyx.png");
+		m_Texture_1->Bind(0); // 0 = texture slot
+		m_Shader->SetUniform1i("u_Texture_Channel_0", 0); // make texture slot (0) available to shader code
+
+		m_Texture_2 = std::make_unique<Texture>("resources/textures/half_life_alyx_2.png");
+		m_Texture_2->Bind(1); // 0 = texture slot
+		m_Shader->SetUniform1i("u_Texture_Channel_1", 1); // make texture slot (0) available to shader code
 	}
 
 	void ExampleBatching::Teardown() {
