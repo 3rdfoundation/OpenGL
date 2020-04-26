@@ -20,22 +20,16 @@ namespace example {
 		m_ClearColor { 
 			0.8f, 0.3f, 0.2f, 1.0f },
 
-		// Vertex color for picking a texture is an unusual approach
-		//
-		// the shader (texture_2_channels) allows these:
-		// 0 = image 0
-		// 1 = image 1
-		// 2 = color
 		m_Positions {
 			-150.0f, -150.0f, 0.0f, 0.0f, 0.0f,
 			 150.0f, -150.0f, 1.0f, 0.0f, 0.0f,
 			 150.0f,  150.0f, 1.0f, 1.0f, 0.0f,
-			-150.0f,  150.0f, 0.0f, 1.0f, 2.0f,
+			-150.0f,  150.0f, 0.0f, 1.0f, 0.0f,
 
 			-150.0f,  200.0f, 0.0f, 0.0f, 1.0f,
 			150.0f,   200.0f, 1.0f, 0.0f, 1.0f,
 			150.0f,   500.0f, 1.0f, 1.0f, 1.0f,
-			-150.0f,  500.0f, 0.0f, 1.0f, 2.0f },
+			-150.0f,  500.0f, 0.0f, 1.0f, 1.0f },
 
 		m_Indices {
 			0, 1, 2,
@@ -82,12 +76,14 @@ namespace example {
 		m_Shader = std::make_unique<Shader>("resources/shaders/texture_2_channels.shader");
 		m_Shader->Bind();
 
-		m_Texture_1 = std::make_unique<Texture>("resources/textures/half_life_alyx.png",0);
-		m_Shader->SetUniform1i("u_Texture_Channel_0", 0);
+		m_Texture_1 = std::make_unique<Texture>("resources/textures/half_life_alyx.png");
+		m_Texture_1->Bind(0);
 
-		m_Texture_2 = std::make_unique<Texture>("resources/textures/half_life_alyx_2.png",1);
-		m_Shader->SetUniform1i("u_Texture_Channel_1", 0);
+		m_Texture_2 = std::make_unique<Texture>("resources/textures/half_life_alyx_2.png");
+		m_Texture_2->Bind(1);
 
+		m_Shader->SetUniform1i("u_Texture_Channel_0", 0); // make texture slot (0) available to shader code
+		m_Shader->SetUniform1i("u_Texture_Channel_1", 1); // make texture slot (0) available to shader code
 	}
 
 	void ExampleBatching::Teardown() {
