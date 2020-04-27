@@ -29,25 +29,10 @@ in vec2 v_TexCoord;
 in float v_Channel;
 
 // Channel 0
-uniform sampler2D u_Texture_Channel_0;
-
-// Channel 1
-uniform sampler2D u_Texture_Channel_1;
+uniform sampler2D u_Texture[2];
 
 void main() {
-	float channel = v_Channel;
-	if (channel == 0) {
-		vec4 texColor = texture(u_Texture_Channel_0, v_TexCoord);
-		//vec4 texColor = vec4(.1f, .1f, .7f, 0);
-		color = texColor;
-	}
-	else if (channel == 1) {
-		vec4 texColor = texture(u_Texture_Channel_1, v_TexCoord);
-		//vec4 texColor = vec4(.1f, .7f, .1f, 0);
-		color = texColor;
-	}
-	else {
-		vec4 texColor = vec4(.7f, .1f, .1f, 0);
-		color = texColor;
-	}
+	int channel = int(v_Channel);
+	vec4 texColor = texture(u_Texture[channel], v_TexCoord); // vec4(v_Channel, v_Channel, v_Channel, 0);
+	color = texColor;
 };

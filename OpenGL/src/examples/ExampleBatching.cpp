@@ -22,12 +22,12 @@ namespace example {
 
 		m_Positions {
 			-150.0f, -150.0f, 0.0f, 0.0f, 0.0f,
-			 150.0f, -150.0f, 1.0f, 0.0f, 2.0f,
+			 150.0f, -150.0f, 1.0f, 0.0f, 0.0f,
 			 150.0f,  150.0f, 1.0f, 1.0f, 0.0f,
 			-150.0f,  150.0f, 0.0f, 1.0f, 0.0f,
 
 			-150.0f,  200.0f, 0.0f, 0.0f, 1.0f,
-			150.0f,   200.0f, 1.0f, 0.0f, 2.0f,
+			150.0f,   200.0f, 1.0f, 0.0f, 1.0f,
 			150.0f,   500.0f, 1.0f, 1.0f, 1.0f,
 			-150.0f,  500.0f, 0.0f, 1.0f, 1.0f },
 
@@ -85,14 +85,14 @@ namespace example {
 		m_Texture_2 = std::make_unique<Texture>("resources/textures/half_life_alyx_2.png");
 		m_Texture_2->Bind(1);
 
-		m_Shader->SetUniform1i("u_Texture_Channel_0", 0); // make texture slot (0) available to shader code
-		m_Shader->SetUniform1i("u_Texture_Channel_1", 1); // make texture slot (0) available to shader code
+		int channels[2] = { 0, 1 };
+		m_Shader->SetUniform1iv("u_Texture", 2, channels);
 	}
 
 	void ExampleBatching::Teardown() {
 		GLCALL(glClearColor(0, 0, 0, 0));
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT));
-		GLCALL(m_Texture_2->Unbind());
+		GLCALL(m_Texture_1->Unbind());
 		GLCALL(m_Texture_2->Unbind());
 		GLCALL(m_Shader->Unbind());
 	}
@@ -110,6 +110,10 @@ namespace example {
 
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
+		
+		GLCALL(glBindTextureUnit(0, m_Texture_1->m_RendererID));
+		GLCALL(glBindTextureUnit(1, m_Texture_2->m_RendererID));
+
 		renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
 
 	}
