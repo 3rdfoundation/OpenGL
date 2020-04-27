@@ -1,5 +1,6 @@
 #include "opengl.h"
 #include "ExampleRepository.h"
+#include "ExampleBatchDynamicGeometry.h"
 #include "ExampleBatching.h"
 #include "ExampleClearColor.h"
 #include "ExampleCyclingColor.h"
@@ -15,6 +16,7 @@ namespace example {
 		m_Examples.push_back(new ExampleClearColor());
 		m_Examples.push_back(new ExampleCyclingColor());
 		m_Examples.push_back(new ExampleDualRender());
+		m_Examples.push_back(new ExampleBatchDynamicGeometry());
 		m_Examples.push_back(new ExampleVertexColor());
 	}
 

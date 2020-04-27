@@ -29,10 +29,14 @@
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
     <ClInclude Include="src\examples\Example.h">
+      <Filter>examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\examples\ExampleBatchDynamicGeometry.h">
       <Filter>examples</Filter>
     </ClInclude>
     <ClInclude Include="src\examples\ExampleBatching.h">
@@ -121,6 +125,9 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\examples\ExampleBatchDynamicGeometry.cpp">
+      <Filter>examples</Filter>
+    </ClCompile>
     <ClCompile Include="src\examples\ExampleBatching.cpp">
       <Filter>examples</Filter>
     </ClCompile>
